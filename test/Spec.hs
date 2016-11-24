@@ -1,13 +1,12 @@
-{-# LANGUAGE OverloadedStrings #-}
 import           Data.Text
 
-import Text.Parsec
+import           Text.Parsec
 
 import           Data.Either
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
-import Lib
+import           Lib
 
 main = defaultMain tests
 

@@ -1,6 +1,5 @@
 module Lib
-    ( someFunc
-    , Email(..)
+    ( Email(..), Domain(..), IP(..)
     , emailParser
     ) where
 
@@ -53,11 +52,14 @@ ipParser = v6 <|> v4
 dnsLabel = limited (many1 dnsLabelChar)
   where dnsLabelChar = oneOf $ '-' : latin ++ digits
 
-domainParser = DomainIP <$> between (char '[') (char ']') ipParser
+domainParser = DomainIP <$> between2 "[]" ipParser
            <|> DomainName <$> dnsLabel `sepBy1` char '.'
 
 ignoreComment = between (optional comment) (optional comment)
-  where comment = between (char '(') (char ')') (many1 (noneOf ")"))
+  where comment = between2 "()" (many1 (noneOf ")"))
+
+between2 :: String -> Parsec String st a -> Parsec String st a
+between2 [open,close] = between (char open) (char close)
 
 emailParser :: Parsec String st Email
 emailParser = do
@@ -66,6 +68,3 @@ emailParser = do
         domainPart <- ignoreComment domainParser
         eof
         return $ Email localPart domainPart
-
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
