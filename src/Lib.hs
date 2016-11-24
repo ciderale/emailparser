@@ -56,12 +56,14 @@ dnsLabel = limited (many1 dnsLabelChar)
 domainParser = DomainIP <$> between (char '[') (char ']') ipParser
            <|> DomainName <$> dnsLabel `sepBy1` char '.'
 
+ignoreComment = between (optional comment) (optional comment)
+  where comment = between (char '(') (char ')') (many1 (noneOf ")"))
 
 emailParser :: Parsec String st Email
 emailParser = do
-        localPart <- localParser
+        localPart <- ignoreComment localParser
         char '@'
-        domainPart <- domainParser
+        domainPart <- ignoreComment domainParser
         eof
         return $ Email localPart domainPart
 

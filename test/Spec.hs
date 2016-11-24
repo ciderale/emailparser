@@ -43,6 +43,10 @@ tests = testGroup "Email Validation"
         , "abc.\"defghi\".xyz@example.com"
         , "\"abcdefghixyz\"@example.com"
         , "\"John..Doe\"@example.com"
+        , "john.smith(comment)@example.com"
+        , "(comment)john.smith@example.com"
+        , "john.smith@(comment)example.com"
+        , "john.smith@example.com(comment)"
         ]
       invalidEmails =
         [ "Abc.example.com" -- (no @ character)
