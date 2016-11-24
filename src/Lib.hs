@@ -33,12 +33,12 @@ quotedString = char '"' *> stringInQuotes <* char '"'
         escapedChars2 = (:) <$> char '\\' <*> count 1 escapedChars
 
 --- length limitation
-limited p = do str <- p
-               guard $ length str <= 63
-               return str
+p `limitedTo` len = do str <- p
+                       guard $ length str <= len
+                       return str
 
 -- the local part
-localParserPart = limited (quotedString <|> many1 baseChars)
+localParserPart = (quotedString <|> many1 baseChars) `limitedTo` 64
 localParser = mconcat <$> localParserPart `sepBy1` char '.'
 
 -- domain part
@@ -49,7 +49,7 @@ ipParser = v6 <|> v4
           number = read <$> many1 (oneOf digits)
           dot = char '.'
 
-dnsLabel = limited (many1 dnsLabelChar)
+dnsLabel = many1 dnsLabelChar `limitedTo` 63
   where dnsLabelChar = oneOf $ '-' : latin ++ digits
 
 domainParser = DomainIP <$> between2 "[]" ipParser
