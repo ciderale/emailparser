@@ -40,6 +40,9 @@ tests = testGroup "Email Validation"
         , "user@tt"
         , "user@[IPv6:2001:DB8::1]"
         , "jsmith@[192.168.2.1]"
+        , "abc.\"defghi\".xyz@example.com"
+        , "\"abcdefghixyz\"@example.com"
+        , "\"John..Doe\"@example.com"
         ]
       invalidEmails =
         [ "Abc.example.com" -- (no @ character)
@@ -51,4 +54,6 @@ tests = testGroup "Email Validation"
         , "1234567890123456789012345678901234567890123456789012345678901234+x@example.com" --  (too long)
         , "john..doe@example.com" -- (double dot before @) with caveat: Gmail lets this through, Email address#Local-part the dots altogether
         , "john.doe@example..com"
+        , "abc\"defghi\"xyz@example.com"
+        , "abc\"def\"ghi@example.com"
         ]
