@@ -53,6 +53,7 @@ emailParser = do
         localPart <- localParser
         char '@'
         domainPart <- domainParser
+        eof
         return $ Email localPart domainPart
 
 someFunc :: IO ()
