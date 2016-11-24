@@ -39,6 +39,7 @@ tests = testGroup "Email Validation"
         , "user@localserver"
         , "user@tt"
         , "user@[IPv6:2001:DB8::1]"
+        , "jsmith@[192.168.2.1]"
         ]
       invalidEmails =
         [ "Abc.example.com" -- (no @ character)

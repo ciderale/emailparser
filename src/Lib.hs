@@ -6,7 +6,14 @@ module Lib
 
 import Text.Parsec
 
-data Email = Email String [String]
+data IP = IPv4 Int Int Int Int
+        | IPv6 String
+        deriving (Eq, Show)
+data Domain = DomainName [String]
+            | DomainIP IP
+            deriving (Eq, Show)
+
+data Email = Email String Domain
   deriving (Eq, Show)
 
 -- the very basic characters
@@ -29,8 +36,16 @@ quotedString = char '"' *> stringInQuotes <* char '"'
 localParserPart = quotedString <|> many1 baseChars
 localParser = mconcat <$> localParserPart `sepBy1` char '.'
 
-dnsLabel =  many1 $ noneOf "."
-domainParser = dnsLabel `sepBy1` char '.'
+ipParser :: Parsec String st IP
+ipParser = v6 <|> v4
+    where v6 = string "IPv6:" >> IPv6 <$> many1 (noneOf "]")
+          v4 = IPv4 <$> number <* dot <*> number <* dot <*> number <* dot <*> number
+          number = read <$> many1 (oneOf digits)
+          dot = char '.'
+
+dnsLabel =  many1 $ oneOf ('-' : latin ++ digits)
+domainParser = DomainIP <$> between (char '[') (char ']') ipParser
+           <|> DomainName <$> dnsLabel `sepBy1` char '.'
 
 
 emailParser :: Parsec String st Email
