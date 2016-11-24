@@ -6,14 +6,17 @@ module Lib
 
 import Text.Parsec
 
-data Email = Email String String
+data Email = Email String [String]
   deriving (Eq, Show)
+
+dnsLabel =  many1 $ noneOf "."
+domainParser = dnsLabel `sepBy1` char '.'
 
 emailParser :: Parsec String st Email
 emailParser = do
         localPart <- many1 $ noneOf "@"
         char '@'
-        domainPart <- many1 anyChar
+        domainPart <- domainParser
         return $ Email localPart domainPart
 
 someFunc :: IO ()
