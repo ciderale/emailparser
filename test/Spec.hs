@@ -11,13 +11,13 @@ import           Lib
 main = defaultMain tests
 
 tests = testGroup "Email Validation"
-    [ testGroup "valid addresses" $ test True <$> validEmails
-    , testGroup "invalid addresses" $ test False <$> invalidEmails
+    [ testGroup "valid addresses" $ assert isRight <$> validEmails
+    , testGroup "invalid addresses" $ assert (not.isRight) <$> invalidEmails
     ]
     where
-      validate = isRight . parse emailParser ""
 
-      test correct email = testCase email $ validate email @?= correct
+      assert pred email = testCase email $ pred result @?= True
+        where result = parse emailParser "" email
 
       validEmails =
         [ "prettyandsimple@example.com"
