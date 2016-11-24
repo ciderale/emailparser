@@ -4,11 +4,13 @@ module Lib
     , emailParser
     ) where
 
+import Control.Monad
 import Text.Parsec
 
 data IP = IPv4 Int Int Int Int
         | IPv6 String
         deriving (Eq, Show)
+
 data Domain = DomainName [String]
             | DomainIP IP
             deriving (Eq, Show)
@@ -31,11 +33,16 @@ quotedString = char '"' *> stringInQuotes <* char '"'
         charsInQuotes = many1 (baseChars <|> quotedChars) <|> escapedChars2
         escapedChars2 = (:) <$> char '\\' <*> count 1 escapedChars
 
+--- length limitation
+limited p = do str <- p
+               guard $ length str <= 63
+               return str
 
 -- the local part
-localParserPart = quotedString <|> many1 baseChars
+localParserPart = limited (quotedString <|> many1 baseChars)
 localParser = mconcat <$> localParserPart `sepBy1` char '.'
 
+-- domain part
 ipParser :: Parsec String st IP
 ipParser = v6 <|> v4
     where v6 = string "IPv6:" >> IPv6 <$> many1 (noneOf "]")
@@ -43,7 +50,9 @@ ipParser = v6 <|> v4
           number = read <$> many1 (oneOf digits)
           dot = char '.'
 
-dnsLabel =  many1 $ oneOf ('-' : latin ++ digits)
+dnsLabel = limited (many1 dnsLabelChar)
+  where dnsLabelChar = oneOf $ '-' : latin ++ digits
+
 domainParser = DomainIP <$> between (char '[') (char ']') ipParser
            <|> DomainName <$> dnsLabel `sepBy1` char '.'
 
