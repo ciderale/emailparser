@@ -1,11 +1,24 @@
 module Main where
 
+import Control.Monad
 import Text.Parsec
 import Lib
+import Examples
+
+printAndParse email = do
+  putStrLn ""
+  putStr "######## input: "
+  putStrLn email
+  putStr "result: "
+  parseTest emailParser email
 
 main :: IO ()
 main = do
-  parseTest emailParser  "hallo.\"wo\".go@[123.99.33.44]"
-  parseTest emailParser  "hallo.\"wo\".go@[123.ii.33.44]"
-  parseTest emailParser  "asdf@wo.com"
-  parseTest emailParser  "asdf@wo1234567890123456789012345678901234567890123456789012345678901234567890.com"
+  putStrLn "valid emails: ##################################################"
+  printAndParse (validEmails!!1)
+  -- printAndParse (validEmails!!2)
+  -- printAndParse (validEmails!!3)
+  forM_ validEmails printAndParse
+  putStrLn "invalid emails #################################################"
+  forM_ invalidEmails printAndParse
+  --printAndParse (invalidEmails!!1)
