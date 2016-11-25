@@ -37,7 +37,7 @@ ipParser :: Parsec String st IP
 ipParser = v6 <|> v4
     where v6 = string "IPv6:" >> IPv6 <$> many1 (noneOf "]")
           v4 = IPv4 <$> number <* dot <*> number <* dot <*> number <* dot <*> number
-          number = read <$> manyOf1 digits
+          number = read <$> manyOf1 digits <?> "IP Address consists of numbers"
 
 dnsLabel = manyOf1 dnsLabelChar `limitedTo` 63
   where dnsLabelChar = '-' : latin ++ digits
@@ -66,7 +66,8 @@ baseChars = latin ++ digits ++ specials
 quotedChars = " (),:;<>@[]."
 escapedChars = "\"\\"
 
-quotedString = char '"' *> stringInQuotes <* char '"'
+quotedString = do str <- char '"' *> stringInQuotes <* char '"'
+                  return $ '"' : str ++ "\""
   where stringInQuotes = mconcat <$> many1 charsInQuotes
         charsInQuotes = manyOf1 (baseChars ++ quotedChars) <|> escapedChars2
         escapedChars2 = (:) <$> char '\\' <*> count 1 (oneOf escapedChars)
