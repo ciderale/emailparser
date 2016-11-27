@@ -3,11 +3,11 @@
 module HelloWorld
   ( hello, word, world
   , helloWorld
-  , doit
   , samples
   ) where
 
 import Text.Parsec
+import ParserUtil
 
 type Parser a = forall state . Parsec String state a
 
@@ -30,15 +30,9 @@ helloWorld = do
   return name
 
 doit :: String -> IO ()
-doit input = do
-  putStrLn $ take 80 $ cycle "#"
-  let parseResult = parse helloWorld input input
-  case parseResult of
-    Right description
-      -> putStrLn $ "The world's description in " ++ show input
-                 ++ " is: " ++ show description
-    Left error
-      -> putStrLn $ "failed to parse: " ++ show error
+doit = test helloWorld $ \ input description ->
+  putStrLn $ "The world's description in " ++ show input
+          ++ " is: " ++ show description
 
 samples :: IO ()
 samples = do

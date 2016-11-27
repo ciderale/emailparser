@@ -1,6 +1,7 @@
 {-# LANGUAGE RankNTypes #-}
 module Lib
-    ( Email(..), Domain(..), IP(..)
+    ( Parser
+    , Email(..), Domain(..), IP(..)
     , emailParser
     ) where
 
