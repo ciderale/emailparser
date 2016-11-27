@@ -4,6 +4,7 @@ import Control.Monad
 import Text.Parsec
 import Lib
 import Examples
+import HelloWorld
 
 printAndParse email = do
   putStrLn ""
@@ -14,11 +15,9 @@ printAndParse email = do
 
 main :: IO ()
 main = do
+  samples
   putStrLn "valid emails: ##################################################"
   printAndParse (validEmails!!1)
-  -- printAndParse (validEmails!!2)
-  -- printAndParse (validEmails!!3)
   forM_ validEmails printAndParse
   putStrLn "invalid emails #################################################"
   forM_ invalidEmails printAndParse
-  --printAndParse (invalidEmails!!1)
