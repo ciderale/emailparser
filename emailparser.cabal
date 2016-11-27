@@ -1,8 +1,8 @@
-name:                email
+name:                emailparser
 version:             0.1.0.0
 synopsis:            Initial project template from stack
 description:         Please see README.md
-homepage:            https://github.com/cidreale/email#readme
+homepage:            https://github.com/cidreale/emailparser#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Alain Lehmann
@@ -21,21 +21,21 @@ library
                      , parsec
   default-language:    Haskell2010
 
-executable email-exe
+executable emailparser-exe
   hs-source-dirs:      app
   main-is:             Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
-                     , email
+                     , emailparser
                      , parsec
   default-language:    Haskell2010
 
-test-suite email-test
+test-suite emailparser-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
   build-depends:       base
-                     , email
+                     , emailparser
                      , text
                      , parsec
                      , tasty
@@ -45,4 +45,4 @@ test-suite email-test
 
 source-repository head
   type:     git
-  location: https://github.com/cidreale/email
+  location: https://github.com/cidreale/emailparser
